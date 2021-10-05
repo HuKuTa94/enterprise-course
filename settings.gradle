@@ -1,0 +1,4 @@
+rootProject.name = 'enterprise-course'
+include 'app'
+include 'core'
+
