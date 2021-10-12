@@ -32,14 +32,25 @@ on:
       - main
 
 env:
-  AWS_REGION: MY_AWS_REGION                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: MY_ECR_REPOSITORY           # set this to your Amazon ECR repository name
-  ECS_SERVICE: MY_ECS_SERVICE                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: MY_ECS_CLUSTER                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: us-west-1
+  
+  # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: app
+  
+  # set this to your Amazon ECS service name
+  ECS_SERVICE: app-container-service
+  
+  # set this to your Amazon ECS cluster name
+  ECS_CLUSTER: enterprise-course
+  
+  # set this to the path to your Amazon ECS task definition
+  # file, e.g. .aws/task-definition.json
+  ECS_TASK_DEFINITION: deploy/production/app/appTask.json
+  
+  # set this to the name of the container in the
+  # containerDefinitions section of your task definition
+  CONTAINER_NAME: app-container
 
 jobs:
   deploy:
@@ -66,7 +77,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_PEROSITORY: app
+        ECR_PEROSITORY: ${{ env.MY_ECR_REPOSITORY }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
@@ -83,14 +94,14 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: deploy\production\app\appTask.json
-        container-name: app-container
+        task-definition: ${{ env.MY_ECS_TASK_DEFINITION}}
+        container-name: ${{ env.MY_CONTAINER_NAME }}
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: app-container-service
-        cluster: enterprise-course
+        service: ${{ env.MY_ECS_SERVICE }}
+        cluster: ${{ env.MY_ECS_CLUSTER }}
         wait-for-service-stability: true
