@@ -1,0 +1,6 @@
+#!/bin/bash
+echo Building docker image...
+(exec "${BASH_SOURCE%/*}/buildImage.sh" $imageTag)
+
+echo Pushing docker image...
+(exec "${BASH_SOURCE%/*}/pushImage.sh" $imageTag)

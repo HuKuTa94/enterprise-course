@@ -2,19 +2,19 @@
 set -e
 
 imageTag=$1
-if [ -z "$1"]
+if [ -z "$1" ]
   then
-    echo No image tag provided. Latest will be used
+    echo No image tag provided. latest will be used
     imageTag=latest
 fi
 
-repositoryName=bob
+repositoryName=app
 imageFullName=$repositoryName:$imageTag
 
 echo [App STARTING] building $imageFullName...
 
 echo [App] creating jar...
-(exec "${BASH_SOURCE%/*}/../gradlew" bootJar --no-demon)
+(exec "${BASH_SOURCE%/*}/../gradlew" bootJar --no-daemon)
 
 echo [App] creating docker image...
 docker build -t $imageFullName ${BASH_SOURCE%/*}

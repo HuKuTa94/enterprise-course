@@ -1,0 +1,6 @@
+#!/bin/bash
+echo Running application...
+(exec "${BASH_SOURCE%/*}/build.sh")
+
+echo Running docker-compose...
+docker-compose up
