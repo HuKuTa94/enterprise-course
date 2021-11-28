@@ -8,7 +8,7 @@ if [ -z "$1" ]
     imageTag=latest
 fi
 
-repositoryName=app
+repositoryName=096497308740.dkr.ecr.us-east-2.amazonaws.com/app
 imageFullName=$repositoryName:$imageTag
 
 echo [App STARTING] building $imageFullName...
